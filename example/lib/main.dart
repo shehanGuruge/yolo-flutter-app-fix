@@ -130,7 +130,8 @@ class _MyAppState extends State<MyApp> {
       id: '',
       task: Task.detect,
       format: Format.coreml,
-      modelPath: modelPath,
+      // modelPath: modelPath,
+      modelName: 'yolov8n',
     );
     // FOR ANDROID
     // final modelPath = await _copy('assets/yolov8n_int8.tflite');
@@ -152,7 +153,8 @@ class _MyAppState extends State<MyApp> {
       id: '',
       task: Task.classify,
       format: Format.coreml,
-      modelPath: modelPath,
+      // modelPath: modelPath,
+      modelName: 'yolov8n',
     );
 
     // final modelPath = await _copy('assets/yolov8n-cls.bin');
