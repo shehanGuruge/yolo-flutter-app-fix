@@ -110,11 +110,11 @@ public class MethodCallHandler: NSObject, VideoCaptureDelegate, InferenceTimeLis
 
     switch type {
     case "local":
-      guard let modelPath = model["modelPath"] as? String else {
+      guard let modelName = model["modelName"] as? String else {
         result(flutterError)
         return
       }
-      yoloModel = LocalModel(modelPath: modelPath, task: task)
+      yoloModel = LocalModel(modelName: modelName, task: task)
     case "remote":
       break
     default:

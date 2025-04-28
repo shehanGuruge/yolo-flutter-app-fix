@@ -81,23 +81,25 @@ class LocalYoloModel extends YoloModel {
   /// Constructor to create an instance of [LocalYoloModel].
   LocalYoloModel({
     required super.id,
-    required this.modelPath,
     required super.task,
     required super.format,
+    required this.modelName,
     this.metadataPath,
   }) : super(type: Type.local);
 
   /// Path where the local custom model is stored.
-  final String modelPath;
+  // final String modelPath;
 
   /// Path where the local custom model metadata is stored.
   final String? metadataPath;
+
+  final String modelName;
 
   /// Returns a json representation of an instance of [LocalYoloModel].
   @override
   Map<String, dynamic> toJson() => {
         ...super.toJson(),
-        'modelPath': modelPath,
+        'modelName': modelName,
         'metadataPath': metadataPath,
       };
 }

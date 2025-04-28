@@ -4,18 +4,21 @@ import CoreML
 
 public class LocalModel: YoloModel {
   public var task: String
-  var modelPath: String
+  var modelName: String
 
-  public init(modelPath: String, task: String) {
-    self.modelPath = modelPath
+  public init(modelName: String, task: String) {
+    self.modelName = modelName
     self.task = task
   }
 
   public func loadModel() async throws -> MLModel? {
-    let url = try! await MLModel.compileModel(at: URL(fileURLWithPath: modelPath))
-    let mlModel = try! MLModel(contentsOf: url)
+    let path = Bundle.main.path(forResource: modelName, ofType: "mlmodelc")
+      
+    guard let modelPath = path else {
+      return nil
+    }
+    let mlModel = try! MLModel(contentsOf: URL(fileURLWithPath: modelPath))
 
-    // TODO Verify task
     return mlModel
   }
 }
