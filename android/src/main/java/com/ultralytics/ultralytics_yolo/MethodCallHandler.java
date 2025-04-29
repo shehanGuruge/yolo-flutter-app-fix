@@ -142,10 +142,10 @@ public class MethodCallHandler implements MethodChannel.MethodCallHandler {
 
         switch (Objects.requireNonNull(type)) {
             case "local":
-                String modelPath = (String) model.get("modelPath");
+                String modelName = (String) model.get("modelName");
                 String metadataPath = (String) model.get("metadataPath");
 
-                yoloModel = new LocalYoloModel(task, format, modelPath, metadataPath);
+                yoloModel = new LocalYoloModel(task, format, modelName, metadataPath);
                 break;
             case "remote":
                 String modelUrl = (String) model.get("modelUrl");
