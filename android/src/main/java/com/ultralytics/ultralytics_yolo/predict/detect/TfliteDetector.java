@@ -12,6 +12,7 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 
 import androidx.camera.core.ImageProxy;
 
@@ -31,6 +32,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -73,17 +75,16 @@ public class TfliteDetector extends Detector {
     public void loadModel(YoloModel yoloModel, boolean useGpu) throws Exception {
         if (yoloModel instanceof LocalYoloModel) {
             final LocalYoloModel localYoloModel = (LocalYoloModel) yoloModel;
-
-            if (localYoloModel.modelPath == null || localYoloModel.modelPath.isEmpty() ||
+            if (localYoloModel.modelName == null || localYoloModel.modelName.isEmpty() ||
                     localYoloModel.metadataPath == null || localYoloModel.metadataPath.isEmpty()) {
-                throw new Exception();
+                throw new Exception("Missing parameters");
             }
-
             final AssetManager assetManager = context.getAssets();
             loadLabels(assetManager, localYoloModel.metadataPath);
             numClasses = labels.size();
+
             try {
-                MappedByteBuffer modelFile = loadModelFile(assetManager, localYoloModel.modelPath);
+                MappedByteBuffer modelFile = loadModelFile(assetManager, localYoloModel.modelName);
                 initDelegate(modelFile, useGpu);
             } catch (Exception e) {
                 throw new PredictorException("Error model");
@@ -132,23 +133,24 @@ public class TfliteDetector extends Detector {
         fpsRateCallback = callback;
     }
 
-    private MappedByteBuffer loadModelFile(AssetManager assetManager, String modelPath) throws IOException {
+        private MappedByteBuffer loadModelFile(AssetManager assetManager, String modelFilename) throws IOException {
         // Local model from Flutter project
-        if (modelPath.startsWith("flutter_assets")) {
-            AssetFileDescriptor fileDescriptor = assetManager.openFd(modelPath);
+//        if (modelPath.startsWith("flutter_assets")) {
+            String assetName = modelFilename + ".tflite";
+            AssetFileDescriptor fileDescriptor = assetManager.openFd(assetName);
             FileInputStream inputStream = new FileInputStream(fileDescriptor.getFileDescriptor());
             FileChannel fileChannel = inputStream.getChannel();
             long startOffset = fileDescriptor.getStartOffset();
             long declaredLength = fileDescriptor.getDeclaredLength();
             return fileChannel.map(FileChannel.MapMode.READ_ONLY, startOffset, declaredLength);
-        }
+//        }
         // Absolute path
-        else {
-            FileInputStream inputStream = new FileInputStream(modelPath);
-            FileChannel fileChannel = inputStream.getChannel();
-            long declaredLength = fileChannel.size();
-            return fileChannel.map(FileChannel.MapMode.READ_ONLY, 0, declaredLength);
-        }
+//        else {
+//            FileInputStream inputStream = new FileInputStream(modelPath);
+//            FileChannel fileChannel = inputStream.getChannel();
+//            long declaredLength = fileChannel.size();
+//            return fileChannel.map(FileChannel.MapMode.READ_ONLY, 0, declaredLength);
+//        }
     }
 
     private void initDelegate(MappedByteBuffer buffer, boolean useGpu) {

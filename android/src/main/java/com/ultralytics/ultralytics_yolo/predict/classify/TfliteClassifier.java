@@ -78,7 +78,7 @@ public class TfliteClassifier extends Classifier {
         if (yoloModel instanceof LocalYoloModel) {
             final LocalYoloModel localYoloModel = (LocalYoloModel) yoloModel;
 
-            if (localYoloModel.modelPath == null || localYoloModel.modelPath.isEmpty() ||
+            if (localYoloModel.modelName == null || localYoloModel.modelName.isEmpty() ||
                     localYoloModel.metadataPath == null || localYoloModel.metadataPath.isEmpty()) {
                 throw new Exception();
             }
@@ -86,7 +86,7 @@ public class TfliteClassifier extends Classifier {
             final AssetManager assetManager = context.getAssets();
             loadLabels(assetManager, localYoloModel.metadataPath);
             try {
-                MappedByteBuffer modelFile = loadModelFile(assetManager, localYoloModel.modelPath);
+                MappedByteBuffer modelFile = loadModelFile(assetManager, localYoloModel.modelName);
                 initDelegate(modelFile, useGpu);
             } catch (Exception e) {
                 throw new PredictorException("Error model");

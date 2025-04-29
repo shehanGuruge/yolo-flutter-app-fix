@@ -125,13 +125,13 @@ class _MyAppState extends State<MyApp> {
 
   Future<ObjectDetector> _initObjectDetectorWithLocalModel() async {
     // FOR IOS
-    final modelPath = await _copy('assets/yolov8n.mlmodel');
+    final metadataPath = await _copy('assets/metadata.yaml');
     final model = LocalYoloModel(
       id: '',
       task: Task.detect,
-      format: Format.coreml,
-      // modelPath: modelPath,
-      modelName: 'yolov8n',
+      format: Format.tflite,
+      metadataPath: metadataPath,
+      modelName: 'yolov8n_int8',
     );
     // FOR ANDROID
     // final modelPath = await _copy('assets/yolov8n_int8.tflite');
